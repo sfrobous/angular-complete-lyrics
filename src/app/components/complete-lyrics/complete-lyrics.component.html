@@ -1,0 +1,14 @@
+<h1>{{ title }}</h1>
+
+<div class="form-group" class="song" *ngIf="gameSong">
+    <div class="song-verse" *ngFor="let verse of gameSong.verses">
+        <div class="song-line input-group" *ngFor="let line of verse.lines">
+            <ng-container *ngFor="let word of line.words">
+                <div class="input-group-prepend" *ngIf="word.readOnly">
+                    <span class="input-group-text">{{word.word}}</span>
+                </div>
+                <input class="form-control" type="text" *ngIf="!word.readOnly" [value]="word.userInput">
+            </ng-container>
+        </div>
+    </div>
+</div>
