@@ -24,9 +24,9 @@ export class GameSongService {
             const trimmedLine = line.trim();
             if (!trimmedLine) {
                 verses.push(new Verse());
+            } else {
+                verses[verses.length - 1].lines.push(new Line(this.getWords(line, options)));
             }
-
-            verses[verses.length - 1].lines.push(new Line(this.getWords(line, options)));
         }
 
         return verses;
@@ -37,20 +37,44 @@ export class GameSongService {
     }
 
     private getWords(line: string, options: GameOptions): Word[] {
-        const allWords = line.split(' ');
+        const allWords = line.match(/\w+|\s+|[^\s\w]+/g);
 
-        const words = allWords.map(word => {
-            const minSize = word.length >= options.minWordSize;
-            const difficultyTest = Math.random() * 100 > options.difficulty;
-            const readOnly = minSize && difficultyTest;
+        if (!allWords) {
+            debugger;
+        } else {
+            const words = allWords.map(word => {
+                const failsMinSize = word.length < options.minWordSize;
+                const failsDifficultyTest = Math.random() * 100 > options.difficulty;
+                const readOnly = failsMinSize || failsDifficultyTest;
 
-            return {
-                readOnly,
-                word,
-                userInput: null
-            };
-        });
+                return {
+                    readOnly,
+                    word,
+                    userInput: null
+                };
+            });
 
-        return words;
+            const normalizedWords: Word[] = [];
+
+            let readOnlySegment = '';
+            for (const word of words) {
+                if (!word.readOnly) {
+                    if (readOnlySegment) {
+                        normalizedWords.push({
+                            readOnly: true,
+                            word: readOnlySegment,
+                            userInput: null
+                        });
+                    }
+                    normalizedWords.push(word);
+                    readOnlySegment = '';
+                } else {
+                    readOnlySegment += word.word;
+                }
+            }
+
+            return normalizedWords;
+        }
+        return [];
     }
 }
