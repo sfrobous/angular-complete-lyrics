@@ -17,7 +17,7 @@ export class GameSongService {
         const verses: Verse[] = [new Verse()];
         const lines = this.getLyricsLines(song);
         while (lines.length && !lines[0].trim()) {
-            lines.splice(0, 1);
+            console.log(lines.splice(0, 1));
         }
 
         for (const line of lines) {
@@ -40,7 +40,7 @@ export class GameSongService {
         const allWords = line.match(/\w+|\s+|[^\s\w]+/g);
 
         if (!allWords) {
-            debugger;
+            console.log(line);
         } else {
             const words = allWords.map(word => {
                 const failsMinSize = word.length < options.minWordSize;
@@ -51,30 +51,82 @@ export class GameSongService {
                     readOnly,
                     word,
                     userInput: null
-                };
+                } as Word;
             });
 
-            const normalizedWords: Word[] = [];
-
-            let readOnlySegment = '';
-            for (const word of words) {
-                if (!word.readOnly) {
-                    if (readOnlySegment) {
-                        normalizedWords.push({
-                            readOnly: true,
-                            word: readOnlySegment,
-                            userInput: null
-                        });
-                    }
-                    normalizedWords.push(word);
-                    readOnlySegment = '';
+            const normalizedWords = words.reduce((accumulated, word) => {
+                const lastWord = accumulated.length ? accumulated[accumulated.length - 1] : null;
+                if (word.readOnly && lastWord && lastWord.readOnly) {
+                    lastWord.word += word.word;
                 } else {
-                    readOnlySegment += word.word;
+                    accumulated.push(word);
                 }
-            }
+
+                return accumulated;
+            }, [] as Word[]);
+
+            // let readOnlySegment = '';
+            // for (const word of words) {
+            //     if (!word.readOnly) {
+            //         if (readOnlySegment) {
+            //             normalizedWords.push({
+            //                 readOnly: true,
+            //                 word: readOnlySegment,
+            //                 userInput: null
+            //             } as Word);
+            //         }
+            //         normalizedWords.push(word);
+            //         readOnlySegment = '';
+            //     } else {
+            //         readOnlySegment += word.word;
+            //     }
+            // }
+
+            console.log(normalizedWords);
 
             return normalizedWords;
         }
         return [];
     }
+
+    public getScore(song: GameSong): {
+        correct: number,
+        wrong: number,
+        total: number,
+        score: number
+    } {
+        const words = this.getEditableWords(song);
+        const correct = words.filter(x => this.wordIsCorrect(x)).length;
+        const wrong = words.length - correct;
+        const total = words.length;
+        const score = correct / total;
+
+        return {
+            correct,
+            wrong,
+            total,
+            score
+        };
+    }
+
+    public wordIsCorrect(word: Word) {
+        return word.userInput === word.word;
+    }
+
+    public getEditableWords(gameSong: GameSong): Word[] {
+        const words = [];
+
+        for (const verse of gameSong.verses) {
+            for (const line of verse.lines) {
+                for (const word of line.words) {
+                    if (!word.readOnly) {
+                        words.push(word);
+                    }
+                }
+            }
+        }
+
+        return words;
+    }
 }
+

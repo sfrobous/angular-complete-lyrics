@@ -1,16 +1,23 @@
 <h1>{{ title }}</h1>
-
-<form>
-    <div class="form-group" class="song" *ngIf="gameSong">
-        <div class="song-verse" *ngFor="let verse of gameSong.verses">
-            <div class="song-line input-group" *ngFor="let line of verse.lines">
-                <ng-container *ngFor="let word of line.words">
-                    <div class="input-group-prepend" *ngIf="word.readOnly">
-                        <span class="input-group-text">{{word.word}}</span>
+<div class="row">
+    <div class="col-12">
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+            <input type="checkbox" [(ngModel)]="showValidation" name="showValidation"> Exibir Validação
+            <span *ngIf="showValidation">{{ score.correct }} de {{ score.total }} - {{ Math.round(score.score * 10000) / 100 }}%</span>
+            <div class="form-group" class="song" *ngIf="gameSong">
+                <div class="song-verse" *ngFor="let verse of gameSong.verses; index as verseIndex">
+                    <div class="song-line input-group" *ngFor="let line of verse.lines; index as lineIndex">
+                        <ng-container *ngFor="let word of line.words; index as wordIndex">
+                            <div class="input-group-prepend" *ngIf="word.readOnly">
+                                <span class="input-group-text">{{word.word}}</span>
+                            </div>
+                            <input [class.correct-word]="showValidation && wordIsCorrect(word)" [class.wrong-word]="showValidation && !wordIsCorrect(word)"
+                                class="form-control" type="text" *ngIf="!word.readOnly" name="word"
+                                [(ngModel)]="gameSong.verses[verseIndex].lines[lineIndex].words[wordIndex].userInput">
+                        </ng-container>
                     </div>
-                    <input class="form-control" type="text" *ngIf="!word.readOnly" [value]="word.word">
-                </ng-container>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-</form>
+</div>

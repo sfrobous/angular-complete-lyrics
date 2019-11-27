@@ -1,0 +1,7 @@
+.correct-word {
+    border-color: green;
+}
+
+.wrong-word {
+    border-color: red;
+}
