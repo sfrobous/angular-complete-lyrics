@@ -14,6 +14,7 @@ export class CompleteLyricsComponent implements OnInit {
   public options: GameOptions;
   public showValidation: boolean;
   public Math = Math;
+  public showAnswer: boolean;
 
   constructor(
     private songService: SongsService,

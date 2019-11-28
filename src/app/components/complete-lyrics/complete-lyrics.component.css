@@ -1,7 +1,19 @@
+.input-complete {    
+    border: 0;
+    outline: 0;
+    padding: 0px;
+    background: transparent;
+    border-bottom: 1px solid black;
+  }
+
 .correct-word {
     border-color: green;
 }
 
 .wrong-word {
     border-color: red;
+}
+
+.answer {
+    font-weight: bold;
 }

@@ -3,17 +3,22 @@
     <div class="col-12">
         <form (ngSubmit)="onSubmit()" #form="ngForm">
             <input type="checkbox" [(ngModel)]="showValidation" name="showValidation"> Exibir Validação
-            <span *ngIf="showValidation">{{ score.correct }} de {{ score.total }} - {{ Math.round(score.score * 10000) / 100 }}%</span>
+            <input type="checkbox" [(ngModel)]="showAnswer" name="showValidation"> Exibir resposta
+            <span *ngIf="showValidation">{{ score.correct }} de {{ score.total }} -
+                {{ Math.round(score.score * 10000) / 100 }}%</span>
             <div class="form-group" class="song" *ngIf="gameSong">
                 <div class="song-verse" *ngFor="let verse of gameSong.verses; index as verseIndex">
-                    <div class="song-line input-group" *ngFor="let line of verse.lines; index as lineIndex">
+                    <div class="song-line" *ngFor="let line of verse.lines; index as lineIndex">
                         <ng-container *ngFor="let word of line.words; index as wordIndex">
-                            <div class="input-group-prepend" *ngIf="word.readOnly">
-                                <span class="input-group-text">{{word.word}}</span>
-                            </div>
-                            <input [class.correct-word]="showValidation && wordIsCorrect(word)" [class.wrong-word]="showValidation && !wordIsCorrect(word)"
-                                class="form-control" type="text" *ngIf="!word.readOnly" name="word"
+                            <!-- <div class="input-group-prepend" *ngIf="word.readOnly"> -->
+                                <span *ngIf="word.readOnly">{{word.word}}</span>
+                            <!-- </div> -->
+                            <input autocomplete="off" class="input-complete"
+                                [class.correct-word]="showValidation && wordIsCorrect(word)"
+                                [class.wrong-word]="showValidation && !wordIsCorrect(word)"
+                                type="text" *ngIf="!word.readOnly" name="word"
                                 [(ngModel)]="gameSong.verses[verseIndex].lines[lineIndex].words[wordIndex].userInput">
+                                <span class="answer" *ngIf="showAnswer && !word.readOnly">({{word.word}})</span>
                         </ng-container>
                     </div>
                 </div>
