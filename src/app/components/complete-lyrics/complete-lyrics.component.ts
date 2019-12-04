@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SongsService } from 'src/app/services/songs.service';
 import { GameSong, GameOptions, Word } from 'src/app/models/lyrics-game.model';
 import { GameSongService } from 'src/app/services/game-song.service';
+import { Song } from 'src/app/models/song.model';
 
 @Component({
   selector: 'app-complete-lyrics',
@@ -9,6 +10,8 @@ import { GameSongService } from 'src/app/services/game-song.service';
   styleUrls: ['./complete-lyrics.component.css']
 })
 export class CompleteLyricsComponent implements OnInit {
+  @Input() song: Song;
+  @Output() changeSong: EventEmitter<boolean> = new EventEmitter();
   public title: string;
   public gameSong: GameSong;
   public options: GameOptions;
@@ -29,12 +32,23 @@ export class CompleteLyricsComponent implements OnInit {
     console.log(this.gameSong);
   }
 
+  onChangeSong() {
+    this.changeSong.emit();
+  }
+
+  initSong(song: Song) {
+    this.title = `${song.artist} - ${song.title}`;
+    this.gameSong = this.gameSongService.buildSong(song, this.options);
+  }
+
   ngOnInit() {
-    this.songService.get('close_nickjonas').then(song => {
-      this.title = `${song.artist} - ${song.title}`;
-      this.gameSong = this.gameSongService.buildSong(song, this.options);
-      console.log(this.gameSong);
-    });
+    if (this.song) {
+      this.initSong(this.song);
+    } else {
+      this.songService.get('close_nickjonas').then(song => {
+        this.initSong(song);
+      });
+    }
   }
 
   wordIsCorrect(word: Word) {

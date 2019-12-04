@@ -135,7 +135,8 @@ export class GameSongService {
         };
     }
 
-    public wordIsCorrect(word: Word) {
+    public wordIsCorrect(word: Word): boolean {
+
         return (word.userInput || '').toUpperCase() === (word.word || '').toUpperCase();
     }
 

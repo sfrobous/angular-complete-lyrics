@@ -1,4 +1,9 @@
 <div class="container">
-  <app-youtube></app-youtube>
-  <app-complete-lyrics></app-complete-lyrics>
+  <div *ngIf="!songSelected">
+    <app-choose-song (songSelected)="onSongSelected($event)"></app-choose-song>
+  </div>
+  <div *ngIf="songSelected">
+    <app-youtube [url]="song.url"></app-youtube>
+    <app-complete-lyrics [song]="song" (changeSong)="onSongChanged()"></app-complete-lyrics>
+  </div>
 </div>

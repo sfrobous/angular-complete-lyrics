@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { CompleteLyricsComponent } from './components/complete-lyrics/complete-lyrics.component';
 import { HttpClientModule } from '@angular/common/http';
 import { YoutubeComponent } from './components/youtube/youtube.component';
+import { ChooseSongComponent } from './components/choose-song/choose-song.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CompleteLyricsComponent,
-    YoutubeComponent
+    YoutubeComponent,
+    ChooseSongComponent
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@ import { Song } from '../models/song.model';
 export const LYRICS: Song[] = [
     {
         key: 'close_nickjonas',
+        url: 'https://www.youtube.com/watch?v=XgJFqVvb2Ws',
         title: 'Close',
         artist: 'Nick Jonas',
         lyrics: `

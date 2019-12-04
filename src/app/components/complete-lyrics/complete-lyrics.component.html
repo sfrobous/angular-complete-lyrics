@@ -1,9 +1,10 @@
 <h1>{{ title }}</h1>
+<a href="#" (click)="onChangeSong()">Choose another song</a>
 <div class="row">
     <div class="col-12">
         <form (ngSubmit)="onSubmit()" #form="ngForm">
-            <input type="checkbox" [(ngModel)]="showValidation" name="showValidation"> Exibir Validação
-            <input type="checkbox" [(ngModel)]="showAnswer" name="showValidation"> Exibir resposta
+            <input type="checkbox" [(ngModel)]="showValidation" name="showValidation"> Show validation
+            <input type="checkbox" [(ngModel)]="showAnswer" name="showValidation"> Show answers
             <span *ngIf="showValidation">{{ score.correct }} de {{ score.total }} -
                 {{ Math.round(score.score * 10000) / 100 }}%</span>
             <div class="form-group" class="song" *ngIf="gameSong">
@@ -15,7 +16,7 @@
                             <!-- </div> -->
                             <input autocomplete="off" class="input-complete"
                                 [class.correct-word]="showValidation && wordIsCorrect(word)"
-                                [class.wrong-word]="showValidation && !wordIsCorrect(word)"
+                                [class.wrong-word]="showValidation && word.userInput && !wordIsCorrect(word)"
                                 type="text" *ngIf="!word.readOnly" name="word"
                                 [(ngModel)]="gameSong.verses[verseIndex].lines[lineIndex].words[wordIndex].userInput">
                                 <span class="answer" *ngIf="showAnswer && !word.readOnly">({{word.word}})</span>
